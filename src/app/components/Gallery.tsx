@@ -54,7 +54,7 @@ export default function Gallery() {
             Galería de Proyectos
           </h2>
 
-          <div className="w-16 h-[2px] bg-cyan-400 mx-auto mb-8"/>
+          <div className="w-16 h-[2px] bg-cyan-400 mx-auto mb-8" />
         </div>
 
 
@@ -68,11 +68,10 @@ export default function Gallery() {
               onClick={() => setSelectedCategory(cat)}
 
               className={`px-6 py-2 rounded-full text-sm tracking-wide transition-all duration-300
-              ${
-                selectedCategory === cat
+              ${selectedCategory === cat
                   ? "bg-cyan-400 text-black shadow-lg shadow-cyan-400/20"
                   : "border border-gray-700 text-gray-300 hover:border-cyan-400 hover:text-white"
-              }`}
+                }`}
             >
               {cat}
 
@@ -126,44 +125,53 @@ export default function Gallery() {
 
 
         {/* FLYER EMPRESA */}
-        <div className="flex justify-center">
+        <div className="flex justify-center mt-12">
 
-          <div className="max-w-sm rounded-2xl overflow-hidden border border-gray-800 hover:border-cyan-500/30 transition-all duration-300">
+          <div className="relative max-w-sm w-full overflow-hidden rounded-2xl border border-gray-800 hover:border-cyan-500/40 transition-all duration-500 group">
+
+            {/* SOMBRA SUPERIOR tipo rollo */}
+            <div className="absolute top-0 left-0 right-0 h-6 bg-gradient-to-b from-black/80 to-transparent z-10 pointer-events-none"></div>
+
+            {/* CONTENEDOR DESENROLLABLE */}
+            <div className="max-h-28 group-hover:max-h-[700px] transition-all duration-700 ease-in-out">
+
+              <img
+                src={flyerImage}
+                alt="Arquitectónicos In House - Servicios"
+                className="w-full h-auto object-cover select-none"
+                draggable="false"
+                onContextMenu={(e) => e.preventDefault()}
+              />
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        {/* LIGHTBOX */}
+        {lightboxImage && (
+
+          <div
+            className="fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-4"
+            onClick={() => setLightboxImage(null)}
+          >
 
             <img
-              src={flyerImage}
-              alt="Arquitectónicos In House - Servicios"
-              className="w-full h-auto"
+              src={lightboxImage.src}
+              alt={lightboxImage.alt}
+              className="max-h-[90vh] max-w-[90vw] object-contain"
               draggable="false"
               onContextMenu={(e) => e.preventDefault()}
             />
 
           </div>
 
-        </div>
+        )}
 
       </div>
 
-
-      {/* LIGHTBOX */}
-      {lightboxImage && (
-
-        <div
-          className="fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-4"
-          onClick={() => setLightboxImage(null)}
-        >
-
-          <img
-            src={lightboxImage.src}
-            alt={lightboxImage.alt}
-            className="max-h-[90vh] max-w-[90vw] object-contain"
-            draggable="false"
-            onContextMenu={(e) => e.preventDefault()}
-          />
-
-        </div>
-
-      )}
-
     </section>
-  );}
+  );
+}
