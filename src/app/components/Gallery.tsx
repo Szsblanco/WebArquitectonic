@@ -150,43 +150,47 @@ export default function Gallery() {
 
         {/* GALERÍA */}
 
-        <div className="columns-1 sm:columns-2 gap-6 mb-12 lg:grid lg:grid-cols-2 lg:gap-6">
+<div className="columns-1 sm:columns-2 gap-6 mb-12 lg:grid lg:grid-cols-2 lg:gap-6">
 
-          {filteredImages.map((img, index) => (
+  {filteredImages.map((img, index) => (
 
-            <div
-              key={index}
-              onClick={() => setLightboxIndex(index)}
-              className="mb-6 break-inside-avoid group relative rounded-xl overflow-hidden cursor-pointer"
-            >
+    <div
+      key={index}
+      onClick={() => setLightboxIndex(index)}
+      className="mb-6 break-inside-avoid group cursor-pointer"
+    >
 
-              <ImageWithFallback
-                src={img.src}
-                alt={img.alt}
-                draggable="false"
-                onContextMenu={(e) => e.preventDefault()}
-                className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
-              />
+      <div className="relative overflow-hidden rounded-xl">
 
-              {/* overlay */}
+        <ImageWithFallback
+          src={img.src}
+          alt={img.alt}
+          draggable="false"
+          onContextMenu={(e) => e.preventDefault()}
+          className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
+        />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        {/* overlay */}
 
-              {/* titulo */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-              <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        {/* titulo */}
 
-                <p className="text-white font-bold text-lg leading-tight">
-                  {img.alt}
-                </p>
+        <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
 
-              </div>
-
-            </div>
-
-          ))}
+          <p className="text-white font-bold text-lg drop-shadow-md">
+            {img.alt}
+          </p>
 
         </div>
+
+      </div>
+
+    </div>
+
+  ))}
+
+</div>
 
         {/* FLYER */}
 
