@@ -68,7 +68,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <p className="text-gray-400" style={{ fontSize: '0.8rem' }}>Email</p>
-                    <p className="text-white">info@arquitectonicosah.com</p>
+                    <p className="text-white">Arquitectonicoinhouse@gmail.com</p>
                   </div>
                 </div>
 
