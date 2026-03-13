@@ -8,15 +8,11 @@ import Espejo from "../../assets/Gallery/Espejos LED/LED-1.jpg";
 import aluminio from "../../assets/Gallery/Ventaneria/Aluminio.jpeg";
 import Fachada from "../../assets/Gallery/Fachadas/Fachada.jpg";
 
-/* TIPADO DE IMÁGENES */
-
 type GalleryImage = {
   src: string;
   alt: string;
   category: string;
 };
-
-/* IMÁGENES DESTACADAS */
 
 const featuredImages: GalleryImage[] = [
   {
@@ -41,14 +37,10 @@ const featuredImages: GalleryImage[] = [
   },
 ];
 
-/* IMPORTACIÓN AUTOMÁTICA */
-
 const imageModules = import.meta.glob(
   "../../assets/Gallery/**/*.{jpg,jpeg,png,webp}",
   { eager: true, import: "default" }
 ) as Record<string, string>;
-
-/* EXCLUIR DESTACADAS */
 
 const featuredSrc = new Set(featuredImages.map((img) => img.src));
 
@@ -72,32 +64,24 @@ const autoImages: GalleryImage[] = Object.entries(imageModules)
   })
   .filter((img): img is GalleryImage => img !== null);
 
-/* UNIR TODAS */
-
 const galleryImages: GalleryImage[] = [...featuredImages, ...autoImages];
 
 export default function Gallery() {
   const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
-  const touchStart = useRef<number>(0);
-  const touchEnd = useRef<number>(0);
-
-  /* CATEGORÍAS */
+  const touchStart = useRef(0);
+  const touchEnd = useRef(0);
 
   const categories = [
     "Todos",
     ...Array.from(new Set(galleryImages.map((img) => img.category))),
   ];
 
-  /* FILTRO */
-
   const filteredImages =
     selectedCategory === "Todos"
       ? galleryImages
       : galleryImages.filter((img) => img.category === selectedCategory);
-
-  /* SWIPE */
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStart.current = e.targetTouches[0].clientX;
@@ -130,6 +114,7 @@ export default function Gallery() {
       style={{ background: "#080e14" }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
         {/* TITULO */}
 
         <div className="text-center mb-12">
@@ -163,36 +148,58 @@ export default function Gallery() {
           ))}
         </div>
 
-        {/* GRID */}
+        {/* GALERÍA */}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        <div className="columns-1 sm:columns-2 gap-6 mb-12 lg:grid lg:grid-cols-2 lg:gap-6">
+
           {filteredImages.map((img, index) => (
+
             <div
               key={index}
               onClick={() => setLightboxIndex(index)}
-              className="group relative rounded-xl overflow-hidden aspect-[16/10] cursor-pointer"
+              className="mb-6 break-inside-avoid group relative rounded-xl overflow-hidden cursor-pointer"
             >
+
               <ImageWithFallback
                 src={img.src}
                 alt={img.alt}
                 draggable="false"
                 onContextMenu={(e) => e.preventDefault()}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
               />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              {/* overlay */}
+
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+              {/* titulo */}
+
+              <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+
+                <p className="text-white font-bold text-lg leading-tight">
+                  {img.alt}
+                </p>
+
+              </div>
+
             </div>
+
           ))}
+
         </div>
 
         {/* FLYER */}
 
         <div className="flex justify-center mt-12">
+
           <div className="relative max-w-sm w-full group">
+
             <div className="absolute top-0 left-0 right-0 h-6 bg-gradient-to-b from-gray-300 to-gray-100 rounded-t-xl shadow-md z-20"></div>
 
             <div className="overflow-hidden rounded-xl border border-gray-800 hover:border-cyan-500/40 transition-all duration-500">
+
               <div className="max-h-0 group-hover:max-h-[700px] transition-all duration-700 ease-in-out">
+
                 <img
                   src={flyerImage}
                   alt="Arquitectónicos In House - Servicios"
@@ -200,14 +207,19 @@ export default function Gallery() {
                   draggable="false"
                   onContextMenu={(e) => e.preventDefault()}
                 />
+
               </div>
+
             </div>
+
           </div>
+
         </div>
 
         {/* LIGHTBOX */}
 
         {lightboxIndex !== null && (
+
           <div
             className="fixed inset-0 bg-black/95 flex items-center justify-center z-50"
             onTouchStart={handleTouchStart}
@@ -215,13 +227,17 @@ export default function Gallery() {
             onTouchEnd={handleTouchEnd}
             onClick={() => setLightboxIndex(null)}
           >
+
             <img
               src={filteredImages[lightboxIndex].src}
               alt=""
               className="max-h-[95vh] max-w-[95vw] object-contain select-none"
             />
+
           </div>
+
         )}
+
       </div>
     </section>
   );
