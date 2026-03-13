@@ -1,51 +1,113 @@
 import { useState } from "react";
-import { ImageWithFallback } from './figma/ImageWithFallback';
+import { ImageWithFallback } from "./figma/ImageWithFallback";
+
 import flyerImage from "../../assets/flyer.jpeg";
 
-const galleryImages = [
+import Division from "../../assets/Gallery/Divisiones/division-2.jpg";
+import Espejo from "../../assets/Gallery/Espejos LED/LED-1.jpg";
+import aluminio from "../../assets/Gallery/Ventaneria/Aluminio.jpeg";
+import Fachada from "../../assets/Gallery/Fachadas/Fachada.jpg";
+
+
+/* IMÁGENES DESTACADAS (LAS 4 PRINCIPALES) */
+
+const featuredImages = [
   {
-    src: 'https://images.unsplash.com/photo-1706670368974-af427a98e816?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBnbGFzcyUyMGJhdGhyb29tJTIwc2hvd2VyJTIwZGl2aXNpb258ZW58MXx8fHwxNzcyNTYyNDY3fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-    alt: 'División de baño en vidrio templado',
-    category: 'Divisiones de Baño',
+    src: Division,
+    alt: "División de baño en vidrio templado",
+    category: "Divisiones de Baño",
   },
   {
-    src: 'https://images.unsplash.com/photo-1634275560771-9c88af5afdbc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnbGFzcyUyMGZhY2FkZSUyMG1vZGVybiUyMGFyY2hpdGVjdHVyZXxlbnwxfHx8fDE3NzI1MzUzNjR8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-    alt: 'Fachada en vidrio',
-    category: 'Fachadas',
+    src: Fachada,
+    alt: "Fachada en vidrio arquitectónico",
+    category: "Fachadas",
   },
   {
-    src: 'https://images.unsplash.com/photo-1659991147507-743a51706cf8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbHVtaW51bSUyMHdpbmRvdyUyMGZyYW1lcyUyMG1vZGVybiUyMGJ1aWxkaW5nfGVufDF8fHx8MTc3MjU2MjQ2N3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-    alt: 'Ventanería en aluminio',
-    category: 'Ventanería',
+    src: aluminio,
+    alt: "Ventanería en aluminio",
+    category: "Ventanería",
   },
   {
-    src: 'https://images.unsplash.com/photo-1758555225985-2274259e1c66?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxMRUQlMjBtaXJyb3IlMjBiYXRocm9vbSUyMG1vZGVybnxlbnwxfHx8fDE3NzI1NjI0Njl8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-    alt: 'Espejo con luz LED',
-    category: 'Espejos LED',
+    src: Espejo,
+    alt: "Espejo con luz LED",
+    category: "Espejos LED",
   },
 ];
+
+
+/* IMPORTACIÓN AUTOMÁTICA DE TODAS LAS IMÁGENES */
+
+const imageModules = import.meta.glob(
+  "../../assets/Gallery/**/*.{jpg,jpeg,png,webp}",
+  {
+    eager: true,
+    import: "default",
+  }
+);
+
+
+const autoImages = Object.entries(imageModules).map(([path, src]) => {
+
+  const parts = path.split("/");
+  const fileName = parts[parts.length - 1];
+  const category = parts[parts.length - 2];
+
+  const cleanName = fileName
+    .replace(/\.[^/.]+$/, "")
+    .replace(/[-_]/g, " ");
+
+  return {
+    src: src as string,
+    alt: cleanName,
+    category,
+  };
+
+});
+
+
+/* UNIR IMÁGENES DESTACADAS + AUTOMÁTICAS */
+
+const galleryImages = [...featuredImages, ...autoImages];
+
+
 
 export default function Gallery() {
 
   const [selectedCategory, setSelectedCategory] = useState("Todos");
   const [lightboxImage, setLightboxImage] = useState<any>(null);
 
+
+  /* GENERAR CATEGORÍAS */
+
   const categories = [
     "Todos",
     ...Array.from(new Set(galleryImages.map(img => img.category)))
   ];
+
+
+  /* FILTRAR IMÁGENES */
 
   const filteredImages =
     selectedCategory === "Todos"
       ? galleryImages
       : galleryImages.filter(img => img.category === selectedCategory);
 
+
+
   return (
-    <section id="galeria" className="py-20 lg:py-28" style={{ background: '#080e14' }}>
+
+    <section
+      id="galeria"
+      className="py-20 lg:py-28"
+      style={{ background: "#080e14" }}
+    >
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* TITULO */}
+
         <div className="text-center mb-12">
+
           <p className="text-cyan-400 tracking-[0.3em] mb-3 text-xs">
             NUESTRO TRABAJO
           </p>
@@ -55,10 +117,13 @@ export default function Gallery() {
           </h2>
 
           <div className="w-16 h-[2px] bg-cyan-400 mx-auto mb-8" />
+
         </div>
 
 
-        {/* BARRA DE CATEGORIAS */}
+
+        {/* BARRA DE CATEGORÍAS */}
+
         <div className="flex flex-wrap justify-center gap-4 mb-14">
 
           {categories.map(cat => (
@@ -66,13 +131,14 @@ export default function Gallery() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-
               className={`px-6 py-2 rounded-full text-sm tracking-wide transition-all duration-300
-              ${selectedCategory === cat
+              ${
+                selectedCategory === cat
                   ? "bg-cyan-400 text-black shadow-lg shadow-cyan-400/20"
                   : "border border-gray-700 text-gray-300 hover:border-cyan-400 hover:text-white"
-                }`}
+              }`}
             >
+
               {cat}
 
             </button>
@@ -82,7 +148,9 @@ export default function Gallery() {
         </div>
 
 
-        {/* GRID DE IMAGENES */}
+
+        {/* GRID DE IMÁGENES */}
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
 
           {filteredImages.map((img) => (
@@ -101,10 +169,14 @@ export default function Gallery() {
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />
 
-              {/* overlay oscuro */}
+              {/* OVERLAY OSCURO */}
+
               <div className="absolute inset-0 bg-gradient-to-t from-gray-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-              {/* texto */}
+
+
+              {/* TEXTO */}
+
               <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
 
                 <span className="text-cyan-400 text-xs tracking-wider">
@@ -124,24 +196,34 @@ export default function Gallery() {
         </div>
 
 
+
         {/* FLYER EMPRESA */}
+
         <div className="flex justify-center mt-12">
 
-          <div className="relative max-w-sm w-full overflow-hidden rounded-2xl border border-gray-800 hover:border-cyan-500/40 transition-all duration-500 group">
+          <div className="relative max-w-sm w-full group">
 
-            {/* SOMBRA SUPERIOR tipo rollo */}
-            <div className="absolute top-0 left-0 right-0 h-6 bg-gradient-to-b from-black/80 to-transparent z-10 pointer-events-none"></div>
+            {/* ROLLO SUPERIOR */}
 
-            {/* CONTENEDOR DESENROLLABLE */}
-            <div className="max-h-28 group-hover:max-h-[700px] transition-all duration-700 ease-in-out">
+            <div className="absolute top-0 left-0 right-0 h-6 bg-gradient-to-b from-gray-300 to-gray-100 rounded-t-xl shadow-md z-20"></div>
 
-              <img
-                src={flyerImage}
-                alt="Arquitectónicos In House - Servicios"
-                className="w-full h-auto object-cover select-none"
-                draggable="false"
-                onContextMenu={(e) => e.preventDefault()}
-              />
+
+
+            {/* CONTENEDOR */}
+
+            <div className="overflow-hidden rounded-xl border border-gray-800 hover:border-cyan-500/40 transition-all duration-500">
+
+              <div className="max-h-0 group-hover:max-h-[700px] transition-all duration-700 ease-in-out">
+
+                <img
+                  src={flyerImage}
+                  alt="Arquitectónicos In House - Servicios"
+                  className="w-full h-auto object-cover select-none"
+                  draggable="false"
+                  onContextMenu={(e) => e.preventDefault()}
+                />
+
+              </div>
 
             </div>
 
@@ -150,7 +232,9 @@ export default function Gallery() {
         </div>
 
 
+
         {/* LIGHTBOX */}
+
         {lightboxImage && (
 
           <div
@@ -173,5 +257,7 @@ export default function Gallery() {
       </div>
 
     </section>
+
   );
+
 }
